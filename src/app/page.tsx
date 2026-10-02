@@ -8,22 +8,9 @@ const highlights = [
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col items-center px-6 py-10 sm:py-16">
-      <GlassCard
-        as="nav"
-        strong
-        className="flex w-full max-w-5xl items-center justify-between rounded-full px-6 py-3"
-      >
-        <span className="font-semibold tracking-tight">Portfolio</span>
-        <div className="flex gap-6 text-sm">
-          <a href="#projects">Projects</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </GlassCard>
-
+    <div className="flex flex-1 flex-col items-center px-6">
       <main className="flex w-full max-w-5xl flex-1 flex-col justify-center gap-10 py-16">
-        <GlassCard as="section" className="p-8 sm:p-12">
+        <GlassCard as="section" id="home" className="scroll-mt-24 p-8 sm:p-12">
           <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">
             Glassmorphism is ready.
           </h1>
@@ -37,7 +24,12 @@ export default function Home() {
 
         <div className="grid gap-6 sm:grid-cols-3">
           {highlights.map((item) => (
-            <GlassCard key={item.title} interactive>
+            <GlassCard
+              key={item.title}
+              id={item.title.toLowerCase()}
+              interactive
+              className="scroll-mt-24"
+            >
               <h2 className="text-xl font-medium">{item.title}</h2>
               <p className="mt-2 text-muted">{item.body}</p>
             </GlassCard>
