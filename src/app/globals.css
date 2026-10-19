@@ -2,37 +2,56 @@
 
 /* ---------- Design tokens ---------- */
 :root {
-  /* Apple-inspired palette */
-  --background: #f5f5f7;
-  --foreground: #1d1d1f;
-  --muted: #6e6e73;
-  --accent: #0071e3;
+  /* Color Hunt palette: #EFECE3 #8FABD4 #4A70A9 #000000 */
+  --background: #efece3;
+  --foreground: #000000;
+  --muted: #4a70a9;
+  --accent: #4a70a9;
 
   /* Glass surface tokens (light) */
-  --glass-bg: rgb(255 255 255 / 0.6);
-  --glass-bg-strong: rgb(255 255 255 / 0.78);
-  --glass-border: rgb(0 0 0 / 0.08);
-  --glass-highlight: rgb(255 255 255 / 0.9);
-  --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.06);
+  --glass-bg: rgb(239 236 227 / 0.6);
+  --glass-bg-strong: rgb(239 236 227 / 0.8);
+  --glass-border: rgb(74 112 169 / 0.25);
+  --glass-highlight: rgb(255 255 255 / 0.6);
+  --glass-shadow: 0 4px 24px rgb(74 112 169 / 0.15);
   --glass-blur: 16px;
   --glass-saturate: 160%;
 
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000;
-    --foreground: #f5f5f7;
-    --muted: #86868b;
-    --accent: #0a84ff;
+/* Dark tokens. The inline script in layout.tsx always sets data-theme before
+   paint; the media query is only the no-JS fallback. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #000000;
+  --foreground: #efece3;
+  --muted: #8fabd4;
+  --accent: #8fabd4;
 
-    --glass-bg: rgb(29 29 31 / 0.6);
-    --glass-bg-strong: rgb(44 44 46 / 0.75);
-    --glass-border: rgb(255 255 255 / 0.1);
-    --glass-highlight: rgb(255 255 255 / 0.12);
+  --glass-bg: rgb(74 112 169 / 0.18);
+  --glass-bg-strong: rgb(74 112 169 / 0.32);
+  --glass-border: rgb(143 171 212 / 0.25);
+  --glass-highlight: rgb(239 236 227 / 0.12);
+  --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --background: #000000;
+    --foreground: #efece3;
+    --muted: #8fabd4;
+    --accent: #8fabd4;
+
+    --glass-bg: rgb(74 112 169 / 0.18);
+    --glass-bg-strong: rgb(74 112 169 / 0.32);
+    --glass-border: rgb(143 171 212 / 0.25);
+    --glass-highlight: rgb(239 236 227 / 0.12);
     --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.5);
   }
 }
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
   --color-background: var(--background);
@@ -42,7 +61,7 @@
   --color-glass-border: var(--glass-border);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-open-sans);
   --font-mono: var(--font-geist-mono);
 }
 
