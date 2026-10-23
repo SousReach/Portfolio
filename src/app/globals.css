@@ -21,6 +21,10 @@
      Alpha (the 0.55 in the color matrix) controls how visible the grain is. */
   --glass-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --glass-grain-size: 160px;
+
+  /* Aura glow: cursor-following light on glass surfaces and buttons. */
+  --aura-rgb: 74 112 169;
+  --aura-size: 260px;
 }
 
 /* Dark tokens. The inline script in layout.tsx always sets data-theme before
@@ -37,6 +41,7 @@
   --glass-border: rgb(143 171 212 / 0.25);
   --glass-highlight: rgb(239 236 227 / 0.12);
   --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.5);
+  --aura-rgb: 143 171 212;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,6 +57,7 @@
     --glass-border: rgb(143 171 212 / 0.25);
     --glass-highlight: rgb(239 236 227 / 0.12);
     --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.5);
+    --aura-rgb: 143 171 212;
   }
 }
 
@@ -69,41 +75,145 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ---------- Aura glow ---------- */
+
+/* --aura-a fades the hover glow; --aura-burst drives the click pulse
+   (1 = finished/invisible). Registered so they can transition/animate. */
+@property --aura-a {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --aura-burst {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@keyframes aura-burst {
+  from {
+    --aura-burst: 0;
+  }
+  to {
+    --aura-burst: 1;
+  }
+}
+
+/* aura-glow.tsx sets --mx/--my (pointer) and --cx/--cy (click point) on every
+   glass/aura ancestor of the pointer, and toggles data-aura-click on click. */
+.glass[data-aura-click],
+.glass-strong[data-aura-click],
+.aura[data-aura-click] {
+  animation: aura-burst 700ms ease-out;
+}
+
 /* ---------- Glass utilities ---------- */
 
-/* Base frosted surface. Compose with rounded-*, p-*, etc. */
+/* Base frosted surface. Compose with rounded-*, p-*, etc.
+   Layers, top to bottom: hover aura, click burst, grain. */
 @utility glass {
   background-color: var(--glass-bg);
-  background-image: var(--glass-grain);
-  background-size: var(--glass-grain-size);
+  background-image:
+    radial-gradient(
+      circle var(--aura-size) at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--aura-rgb) / calc(var(--aura-a) * 0.35)),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle calc(40px + var(--aura-burst) * 360px) at var(--cx, 50%) var(--cy, 50%),
+      rgb(var(--aura-rgb) / calc((1 - var(--aura-burst)) * 0.55)),
+      transparent
+    ),
+    var(--glass-grain);
+  background-size: auto, auto, var(--glass-grain-size);
+  background-repeat: no-repeat, no-repeat, repeat;
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--glass-shadow),
     inset 0 1px 0 var(--glass-highlight);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  transition:
+    --aura-a 300ms ease,
+    transform 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+
+  @media (hover: hover) {
+    &:hover {
+      --aura-a: 1;
+    }
+  }
 }
 
 /* Higher-opacity variant for content that needs more legibility (nav, modals). */
 @utility glass-strong {
   background-color: var(--glass-bg-strong);
-  background-image: var(--glass-grain);
-  background-size: var(--glass-grain-size);
+  background-image:
+    radial-gradient(
+      circle var(--aura-size) at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--aura-rgb) / calc(var(--aura-a) * 0.35)),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle calc(40px + var(--aura-burst) * 360px) at var(--cx, 50%) var(--cy, 50%),
+      rgb(var(--aura-rgb) / calc((1 - var(--aura-burst)) * 0.55)),
+      transparent
+    ),
+    var(--glass-grain);
+  background-size: auto, auto, var(--glass-grain-size);
+  background-repeat: no-repeat, no-repeat, repeat;
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--glass-shadow),
     inset 0 1px 0 var(--glass-highlight);
   -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(var(--glass-saturate));
   backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(var(--glass-saturate));
-}
-
-/* Interactive lift for clickable glass. */
-@utility glass-hover {
   transition:
+    --aura-a 300ms ease,
     transform 200ms ease,
     background-color 200ms ease,
     box-shadow 200ms ease;
 
+  @media (hover: hover) {
+    &:hover {
+      --aura-a: 1;
+    }
+  }
+}
+
+/* Aura for buttons and links (no glass surface). Override the color per
+   element with e.g. [--aura-rgb:255_255_255]. */
+@utility aura {
+  --aura-size: 90px;
+  background-image:
+    radial-gradient(
+      circle var(--aura-size) at var(--mx, 50%) var(--my, 50%),
+      rgb(var(--aura-rgb) / calc(var(--aura-a) * 0.45)),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle calc(20px + var(--aura-burst) * 120px) at var(--cx, 50%) var(--cy, 50%),
+      rgb(var(--aura-rgb) / calc((1 - var(--aura-burst)) * 0.7)),
+      transparent
+    );
+  background-repeat: no-repeat;
+  transition:
+    --aura-a 300ms ease,
+    color 150ms ease,
+    background-color 150ms ease,
+    opacity 150ms ease;
+
+  @media (hover: hover) {
+    &:hover {
+      --aura-a: 1;
+    }
+  }
+}
+
+/* Interactive lift for clickable glass. */
+@utility glass-hover {
   &:hover {
     background-color: var(--glass-bg-strong);
     transform: translateY(-2px);

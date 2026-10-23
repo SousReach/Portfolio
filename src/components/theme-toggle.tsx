@@ -27,7 +27,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label="Toggle light/dark theme"
-      className="flex size-9 items-center justify-center rounded-full hover:bg-foreground/5"
+      className="aura flex size-9 items-center justify-center rounded-full hover:bg-foreground/5"
     >
       <svg
         viewBox="0 0 24 24"

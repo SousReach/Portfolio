@@ -34,7 +34,7 @@ export function Header() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="rounded-full px-4 py-2 text-muted transition-colors hover:bg-foreground/5 hover:text-foreground"
+                className="aura rounded-full px-4 py-2 text-muted hover:bg-foreground/5 hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -46,7 +46,7 @@ export function Header() {
           <ThemeToggle />
           <Link
             href="/#contact"
-            className="hidden rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 sm:inline-block"
+            className="aura hidden rounded-full bg-accent px-4 py-2 text-sm font-medium text-white [--aura-rgb:255_255_255] hover:opacity-90 sm:inline-block"
           >
             Hire me
           </Link>
@@ -57,7 +57,7 @@ export function Header() {
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
-            className="-mr-2 flex size-9 items-center justify-center rounded-full hover:bg-foreground/5 sm:hidden"
+            className="aura -mr-2 flex size-9 items-center justify-center rounded-full hover:bg-foreground/5 sm:hidden"
           >
             <svg
               viewBox="0 0 24 24"
@@ -90,7 +90,7 @@ export function Header() {
                 <Link
                   href={link.href}
                   onClick={close}
-                  className="block rounded-2xl px-4 py-3 hover:bg-foreground/5"
+                  className="aura block rounded-2xl px-4 py-3 hover:bg-foreground/5"
                 >
                   {link.label}
                 </Link>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Open_Sans } from "next/font/google";
+import { AuraGlow } from "@/components/aura-glow";
 import { Header } from "@/components/header";
 import "./globals.css";
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <AuraGlow />
         <Header />
         {children}
       </body>
