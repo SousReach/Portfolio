@@ -17,6 +17,10 @@
   --glass-blur: 16px;
   --glass-saturate: 160%;
 
+  /* Frosted-glass grain: monochrome fractal noise tiled over the surface.
+     Alpha (the 0.55 in the color matrix) controls how visible the grain is. */
+  --glass-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --glass-grain-size: 160px;
 }
 
 /* Dark tokens. The inline script in layout.tsx always sets data-theme before
@@ -69,7 +73,9 @@
 
 /* Base frosted surface. Compose with rounded-*, p-*, etc. */
 @utility glass {
-  background: var(--glass-bg);
+  background-color: var(--glass-bg);
+  background-image: var(--glass-grain);
+  background-size: var(--glass-grain-size);
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--glass-shadow),
@@ -80,7 +86,9 @@
 
 /* Higher-opacity variant for content that needs more legibility (nav, modals). */
 @utility glass-strong {
-  background: var(--glass-bg-strong);
+  background-color: var(--glass-bg-strong);
+  background-image: var(--glass-grain);
+  background-size: var(--glass-grain-size);
   border: 1px solid var(--glass-border);
   box-shadow:
     var(--glass-shadow),
@@ -97,7 +105,7 @@
     box-shadow 200ms ease;
 
   &:hover {
-    background: var(--glass-bg-strong);
+    background-color: var(--glass-bg-strong);
     transform: translateY(-2px);
   }
 }
